@@ -21,7 +21,7 @@
 # '\h': the short host name (up to first '.')
 ##
 #DEFAULT_PROMPT="[\W]$ "
-DEFAULT_PROMPT="[\u@\h:\W]$ "
+DEFAULT_PROMPT="[\u@\h:\w]$ "
 DEFAULT_REMOTE="origin"
 DEFAULT_REMOTE_BRANCH="master"
 
@@ -147,15 +147,15 @@ HAS_REMOTE_PATTERN="[remote \"(.*)\"]"
 ERROR_PATTERN="fatal: "
 
 function set_virtualenv() {
-    if test -z "$VIRTUALENV" ; then
-        PYTHON_VIRTUALENV=""
+    if test -z "$VIRTUAL_ENV" ; then
+        export PYTHON_VIRTUALENV=""
     else
-        PYTHON_VIRTUALENV="([`basename \"$VIRTUALENV\"`])"
+        export PYTHON_VIRTUALENV="(`basename \"$VIRTUAL_ENV\"`)"
     fi
     if test -z "$CONDA_DEFAULT_ENV" ; then
-        PYTHON_VIRTUALENV=""
+        export CONDA_ENV=""
     else
-        PYTHON_VIRTUALENV="($CONDA_DEFAULT_ENV)"
+        export CONDA_ENV="($CONDA_DEFAULT_ENV)"
     fi
 }
 
@@ -170,7 +170,7 @@ function git_simple_prompt() {
 
   set_virtualenv
 
-  pscmd="${PYTHON_VIRTUALENV}$DEFAULT_PROMPT"
+  pscmd="${CONDA_ENV}${PYTHON_VIRTUALENV}$DEFAULT_PROMPT"
   status=`git status 2>&1`
   
   # It's a git project 
@@ -222,7 +222,7 @@ function git_simple_prompt() {
       fi
     fi
 
-    pscmd="${PYTHON_VIRTUALENV}[${color}$project${branch_color}:$branch$message$RESET]$ "
+    pscmd="${CONDA_ENV}${PYTHON_VIRTUALENV}[${color}$project${branch_color}:$branch$message$RESET]$ "
   fi
 
   export PS1="$pscmd"
